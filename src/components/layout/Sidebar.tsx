@@ -1,69 +1,54 @@
 'use client'
-import Link from "next/link";
-
-const menus = [
-    {
-        id: 1,
-        label: 'Dashboard',
-        url: '/dashboard'
-    },
-    {
-        id: 2,
-        label: 'Tenants',
-        url: '/dashboard/tenants'
-    },
-    {
-        id: 3,
-        label: 'Rooms',
-        url: '/dashboard/rooms'
-    },
-    {
-        id: 4,
-        label: 'Bookings',
-        url: '/dashboard/bookings'
-    },
-    {
-        id: 5,
-        label: 'Payments',
-        url: '/dashboard/payments'
-    },
-    {
-        id: 6,
-        label: 'Maintenance Requests',
-        url: '/dashboard/maintenance_request'
-    },
-    {
-        id: 7,
-        label: 'Reports',
-        url: '/dashboard/reports'
-    },
-    // {
-    //     id:1,
-    //     label: 'Settings',
-    //     url:'/dashboard/settings'
-    // },
-    // {
-    //     id:1,
-    //     label: 'Notifications',
-    //     url:'/dashboard/notifications'
-    // },
-]
+import { useState } from 'react';
 
 export default function Sidebar() {
+    const [isCollapsed, setIsCollapsed] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsCollapsed(!isCollapsed);
+    };
+
     return (
-        <aside className="w-64 bg-gray-800 text-white h-full p-4">
-            <div>
-                <h2 className="text-lg font-bold mb-4">Navigation</h2>
+        <aside
+            className={`bg-gray-800 text-white h-full p-4 transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'
+                }`}
+        >
+            <div className='flex items-center mb-4 gap-2'>
+                <button
+                    onClick={toggleSidebar}
+                    className="bg-gray-600 text-white p-2 rounded"
+                >
+                    {isCollapsed ? '▶' : '◀'}
+                </button>
+                <h1 className={`${isCollapsed ? 'hidden' : ''}`}>
+                    Dashboard
+                </h1>
+
             </div>
-            <nav>
+
+            <nav className={`${isCollapsed ? 'hidden' : ''}`}>
                 <ul>
-                    {menus.map((item, idx: number) => (
-                        <li className="mb-2" key={idx}>
-                            <Link href={item.url} className="hover:bg-gray-700 p-2 block rounded">
-                                {item.label}
-                            </Link>
-                        </li>
-                    ))}
+                    <li className="mb-2">
+                        <a href="/dashboard" className="hover:bg-gray-700 p-2 block rounded">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li className="mb-2">
+                        <a href="/dashboard/tenants" className="hover:bg-gray-700 p-2 block rounded">
+                            Tenants
+                        </a>
+                    </li>
+                    <li className="mb-2">
+                        <a href="/rooms" className="hover:bg-gray-700 p-2 block rounded">
+                            Rooms
+                        </a>
+                    </li>
+                    <li className="mb-2">
+                        <a href="/dashboard/users" className="hover:bg-gray-700 p-2 block rounded">
+                            Users
+                        </a>
+                    </li>
+                    {/* Add more links */}
                 </ul>
             </nav>
         </aside>

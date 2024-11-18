@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchTenants, Tenant } from '@/services/tenantService';
 
-export function useTenants(initialData: Tenant[]) {
-    return useQuery<Tenant[]>({
+export function useTenants(initialData: any) {
+    return useQuery<any>({
         queryKey: ['tenants'],
         queryFn: fetchTenants,
         initialData,
