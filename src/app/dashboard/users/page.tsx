@@ -1,9 +1,10 @@
 'use client'
 import Table from '@/components/table/Table';
-import useCreateUser from '@/hooks/useCreateUser';
-import useUsers from '@/hooks/useUsers';
+import { useUsers, useCreateUser } from '@/hooks/useUsers';
 // import { useTenants } from '@/hooks/useTenants';
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react';
+import { CreateUser } from '@/types/user';
+
 
 // interface Tenant {
 //     id: number;
@@ -30,20 +31,14 @@ const UserPage = ({ initialData }: TenantListProps) => {
 
 
     const [page, setPage] = useState<number>(1)
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+
+    const [newUser, setNewUser] = useState<CreateUser>({ name: '', email: '', password: '' });
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        createUser({ name, email }, {
-            onSuccess: () => {
-                setName('');
-                setEmail('');
-                alert('User created successfully!');
-            },
-            onError: () => {
-                alert('Failed to create user.');
-            },
+        createUser(newUser, {
+            onSuccess: () => setNewUser({ name: '', email: '', password: '' }), // Reset form
         });
     };
 
@@ -64,16 +59,16 @@ const UserPage = ({ initialData }: TenantListProps) => {
                     <input
                         type='text'
                         placeholder='Name'
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={newUser.name}
+                        onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                         className='border p-2 mr-2'
                         required
                     />
                     <input
                         type='email'
                         placeholder='Email'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={newUser.email}
+                        onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                         className='border p-2 mr-2'
                         required
                     />
@@ -84,7 +79,7 @@ const UserPage = ({ initialData }: TenantListProps) => {
             </div>
 
             <h1 className="text-lg font-bold mb-4">User List</h1>
-            <Table
+            {/* <Table
                 columns={[
                     { key: 'id', header: 'ID' },
                     { key: 'name', header: 'Name' },
@@ -94,7 +89,7 @@ const UserPage = ({ initialData }: TenantListProps) => {
                 loading={isLoading}
                 data={users}
                 skeletonRowCount={10}
-            />
+            /> */}
 
         </div>
     )

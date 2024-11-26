@@ -16,7 +16,7 @@ const useCreateUser = () => {
         },
         onSuccess: () => {
             // Invalidasi query users agar data terbaru di-fetch
-            queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['usersasd'] });
         },
         onError: (error) => {
             console.error('Error creating user:', error);
