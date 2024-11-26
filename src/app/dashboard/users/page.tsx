@@ -1,7 +1,9 @@
 'use client'
 import Table from '@/components/table/Table';
-import { useTenants } from '@/hooks/useTenants';
-import React, { useEffect, useState } from 'react'
+import useCreateUser from '@/hooks/useCreateUser';
+import useUsers from '@/hooks/useUsers';
+// import { useTenants } from '@/hooks/useTenants';
+import React, { FormEvent, useEffect, useState } from 'react'
 
 // interface Tenant {
 //     id: number;
@@ -22,50 +24,78 @@ interface TenantListProps {
 
 const UserPage = ({ initialData }: TenantListProps) => {
 
-    const { data, isLoading, error } = useTenants(initialData);
-    const [page, setPage] = useState<number>(1)
+    // react-query
+    const { data: users, isLoading, error } = useUsers();
+    const { mutate: createUser, isPending: isPosting } = useCreateUser();
 
-    useEffect(() => {
-        console.log(data)
-    }, [data])
+
+    const [page, setPage] = useState<number>(1)
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        createUser({ name, email }, {
+            onSuccess: () => {
+                setName('');
+                setEmail('');
+                alert('User created successfully!');
+            },
+            onError: () => {
+                alert('Failed to create user.');
+            },
+        });
+    };
+
 
     // if (isLoading) return <p>Loading tenants...</p>;
     // if (error) return <p>Error loading tenants</p>;
 
-    const nextPage = () => setPage((old) => old + 1);
-    const prevPage = () => setPage((old) => old - 1);
+    // const nextPage = () => setPage((old) => old + 1);
+    // const prevPage = () => setPage((old) => old - 1);
 
+    useEffect(() => { console.log(users) }, [users])
 
     return (
         <div className="p-4 bg-white rounded">
-            <h1 className="text-lg font-bold mb-4">Tenant List</h1>
+            <div>
+                <h1 className='text-2xl font-bold'>User Management</h1>
+                <form onSubmit={handleSubmit} className='mb-4'>
+                    <input
+                        type='text'
+                        placeholder='Name'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className='border p-2 mr-2'
+                        required
+                    />
+                    <input
+                        type='email'
+                        placeholder='Email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className='border p-2 mr-2'
+                        required
+                    />
+                    <button>
+                        {isPosting ? 'Creating...' : 'Create User'}
+                    </button>
+                </form>
+            </div>
+
+            <h1 className="text-lg font-bold mb-4">User List</h1>
             <Table
                 columns={[
                     { key: 'id', header: 'ID' },
-                    { key: 'firstName', header: 'Name' },
+                    { key: 'name', header: 'Name' },
                     // { key: 'room', header: 'Room' },
                     // { key: 'paymentStatus', header: 'Payment Status' },
                 ]}
                 loading={isLoading}
-                data={data?.users}
+                data={users}
                 skeletonRowCount={10}
             />
-            <div className="flex justify-between items-center mt-4">
-                <button
-                    onClick={prevPage}
-                    disabled={page === 1}
-                    className="px-4 py-2 bg-gray-500 text-white disabled:opacity-50"
-                >
-                    Previous
-                </button>
-                <span>Page {page}</span>
-                <button
-                    onClick={nextPage}
-                    className="px-4 py-2 bg-gray-500 text-white"
-                >
-                    Next
-                </button>
-            </div>
+
         </div>
     )
 }

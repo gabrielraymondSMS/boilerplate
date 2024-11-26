@@ -1,16 +1,19 @@
 'use client'
+import useAppStore from '@/store/store';
 import { useState } from 'react';
 
 export default function Sidebar() {
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    // const [isCollapsed, setIsCollapsed] = useState(false);
 
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
-    };
+    // const toggleSidebar = () => {
+    //     setIsCollapsed(!isCollapsed);
+    // };
+
+    const { sidebarOpen, toggleSidebar } = useAppStore()
 
     return (
         <aside
-            className={`bg-gray-800 text-white h-full p-4 transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'
+            className={`bg-gray-800 text-white h-full p-4 transition-all duration-300 ${sidebarOpen ? 'w-16' : 'w-64'
                 }`}
         >
             <div className='flex items-center mb-4 gap-2'>
@@ -18,15 +21,15 @@ export default function Sidebar() {
                     onClick={toggleSidebar}
                     className="bg-gray-600 text-white p-2 rounded"
                 >
-                    {isCollapsed ? '▶' : '◀'}
+                    {sidebarOpen ? '▶' : '◀'}
                 </button>
-                <h1 className={`${isCollapsed ? 'hidden' : ''}`}>
+                <h1 className={`${sidebarOpen ? 'hidden' : ''}`}>
                     Dashboard
                 </h1>
 
             </div>
 
-            <nav className={`${isCollapsed ? 'hidden' : ''}`}>
+            <nav className={`${sidebarOpen ? 'hidden' : ''}`}>
                 <ul>
                     <li className="mb-2">
                         <a href="/dashboard" className="hover:bg-gray-700 p-2 block rounded">
