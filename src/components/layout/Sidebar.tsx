@@ -3,15 +3,11 @@ import { useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import useAppStore from '@/store/store';
 import Link from 'next/link';
-// import { ChevronRightIcon, ChevronDownIcon, HomeIcon, UsersIcon, UserGroupIcon, WrenchIcon } from '@heroicons/react'; // Import Heroicons
 import { ChevronRightIcon, ChevronDownIcon, HomeIcon, UsersIcon, UserGroupIcon, WrenchIcon } from '@heroicons/react/24/solid';
 
 export default function Sidebar() {
-    const { toggleSidebar } = useAppStore();
+    const { sidebarOpen, toggleSidebar } = useAppStore();
     const pathname = usePathname(); // usePathname relies on the client-side API
-
-    // Set sidebar to open by default
-    const [sidebarOpen, setSidebarOpen] = useState(true);
 
     const [openSubmenus, setOpenSubmenus] = useState<{ [key: string]: boolean }>({});
 
@@ -57,7 +53,7 @@ export default function Sidebar() {
     return (
         <aside className={`bg-gray-800 text-white h-full p-4 transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-16'}`}>
             <div className="flex items-center mb-4 gap-2">
-                <button onClick={() => setSidebarOpen(!sidebarOpen)} className="bg-gray-600 text-white p-2 rounded">
+                <button onClick={() => toggleSidebar()} className="bg-gray-600 text-white p-2 rounded">
                     {sidebarOpen ? '▶' : '◀'}
                 </button>
                 <h1 className={`${sidebarOpen ? '' : 'hidden'}`}>Dashboard</h1>
@@ -66,7 +62,7 @@ export default function Sidebar() {
             <nav>
                 <ul>
                     {menuItems.map((item) => (
-                        <li key={item.name} className="mb-2 relative">
+                        <li key={item.name} className="mb-2 relative group">
                             {item.children ? (
                                 <div
                                     className={`flex justify-between items-center cursor-pointer p-2 rounded transition-all ${pathname.startsWith(item.href || '') ? ' text-white' : 'hover:bg-gray-700'}`}
@@ -75,6 +71,7 @@ export default function Sidebar() {
                                     <span className="flex items-center gap-2">
                                         {item.icon}
                                         {sidebarOpen && item.name}
+
                                     </span>
                                     {sidebarOpen && <span className="ml-2 text-gray-400 hover:text-white">
                                         {openSubmenus[item.name] ? <ChevronDownIcon className="w-4 h-4" /> : <ChevronRightIcon className="w-4 h-4" />}
@@ -91,19 +88,40 @@ export default function Sidebar() {
                                 </Link>
                             )}
 
+
+
                             {item.children && openSubmenus[item.name] && (
-                                <ul className="ml-4 mt-2">
-                                    {item.children.map((child) => (
-                                        <li key={child.name} className="mb-2">
-                                            <div className="relative">
-                                                <Link href={child.href} className={`block p-2 rounded transition-all ${pathname === child.href ? ' text-white pl-6' : 'hover:bg-gray-700'}`}>
-                                                    {pathname === child.href && <span className="absolute left-0 top-0 h-full w-1 bg-blue-400"></span>}
-                                                    {sidebarOpen && child.name}
-                                                </Link>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
+
+                                sidebarOpen ?
+                                    <ul className="ml-4 mt-2">
+                                        {item.children.map((child) => (
+                                            <li key={child.name} className="mb-2">
+                                                <div className="relative">
+                                                    <Link href={child.href} className={`block p-2 rounded transition-all ${pathname === child.href ? ' text-white pl-6' : 'hover:bg-gray-700'}`}>
+                                                        {pathname === child.href && <span className="absolute left-0 top-0 h-full w-1 bg-blue-400"></span>}
+                                                        {sidebarOpen && child.name}
+
+                                                    </Link>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    :
+                                    <div className='absolute left-full top-0 bg-gray-800 w-64  px-2 py-1 hidden group-hover:block transition-all hover:duration-300 '>
+                                        <ul className=" mt-2">
+                                            {item.children.map((child) => (
+                                                <li key={child.name} className="mb-2">
+                                                    <div className="relative">
+                                                        <Link href={child.href} className={`block p-2 rounded transition-all ${pathname === child.href ? ' text-white pl-6' : 'hover:bg-gray-700'}`}>
+                                                            {pathname === child.href && <span className="absolute left-0 top-0 h-full w-1 bg-blue-400"></span>}
+                                                            {child.name}
+
+                                                        </Link>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                             )}
                         </li>
                     ))}
